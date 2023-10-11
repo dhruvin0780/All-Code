@@ -1,0 +1,671 @@
+1. Write a shell script to find greatest amongst three numbers.
+#!/bin/bash
+
+echo "Enter the first number: "
+read num1
+
+echo "Enter the second number: "
+read num2
+
+echo "Enter the third number: "
+read num3
+
+if [ $num1 -gt $num2 ] && [ $num1 -gt $num3 ]; then
+  echo "The greatest number is $num1"
+elif [ $num2 -gt $num1 ] && [ $num2 -gt $num3 ]; then
+  echo "The greatest number is $num2"
+else
+  echo "The greatest number is $num3"
+fi
+
+//Save this script in a file, for example, find_greatest.sh. Make it executable by running:
+chmod +x find_greatest.sh
+
+//Then, you can run the script:
+./find_greatest.sh
+-------------------------------------------------------------------------
+
+2. Write a shell script to find all prime numbers in given range.
+#!/bin/bash
+
+echo "Enter the lower bound of the range: "
+read lower
+
+echo "Enter the upper bound of the range: "
+read upper
+
+echo "Prime numbers in the range $lower to $upper are:"
+
+for ((num = lower; num <= upper; num++)); do
+  is_prime=1
+
+  if [ "$num" -le 1 ]; then
+    is_prime=0
+  fi
+
+  for ((i = 2; i * i <= num; i++)); do
+    if [ $((num % i)) -eq 0 ]; then
+      is_prime=0
+      break
+    fi
+  done
+
+  if [ $is_prime -eq 1 ]; then
+    echo $num
+  fi
+done
+
+//Save this script in a file, for example, find_primes.sh, and make it executable using:
+chmod +x find_primes.sh
+
+//Then, you can run the script:
+./find_primes.sh
+-------------------------------------------------------------------------------------
+
+3. Write a shell script to draw following pattern.
+#!/bin/bash
+
+echo "Enter the number of rows for the pyramid: "
+read rows
+
+for ((i = 1; i <= rows; i++)); do
+  # Print leading spaces
+  for ((j = i; j < rows; j++)); do
+    echo -n " "
+  done
+
+  # Print asterisks
+  for ((k = 1; k <= 2 * i - 1; k++)); do
+    echo -n "*"
+  done
+
+  echo  # Move to the next line
+done
+
+//Save this script in a file, for example, draw_pyramid.sh, and make it executable using:
+chmod +x draw_pyramid.sh
+
+//Then, you can run the script:
+./draw_pyramid.sh
+
+------------------------------------------------------------------------------
+
+4. Write a shell script to find sum of digits of a number.
+#!/bin/bash
+
+echo "Enter a number: "
+read num
+
+sum=0
+
+while [ $num -gt 0 ]; do
+  digit=$((num % 10))  # Get the last digit of the number
+  sum=$((sum + digit))  # Add the digit to the sum
+  num=$((num / 10))    # Remove the last digit from the number
+done
+
+echo "The sum of the digits is: $sum"
+
+//Save this script in a file, for example, sum_of_digits.sh, and make it executable using:
+chmod +x sum_of_digits.sh
+
+//Then, you can run the script:
+./sum_of_digits.sh
+
+-------------------------------------------------------------------
+5. Write a shell script to print fibonacci series upto entered value N.
+
+#!/bin/bash
+
+echo "Enter the value of N: "
+read N
+
+# Initialize the first two Fibonacci numbers
+a=0
+b=1
+
+echo "Fibonacci series up to $N:"
+echo -n "$a "  # Print the first number
+
+while [ $b -le $N ]; do
+  echo -n "$b "  # Print the current Fibonacci number
+
+  # Calculate the next Fibonacci number
+  temp=$((a + b))
+  a=$b
+  b=$temp
+done
+
+echo  # Move to the next line
+
+//Save this script in a file, for example, fibonacci_series.sh, and make it executable using:
+chmod +x fibonacci_series.sh
+
+//Then, you can run the script:
+./fibonacci_series.sh
+
+=----------------------------------------------------------------------------
+6 Write a menu driven shell script which accepts basic amount as an input and displays following
+
+#!/bin/bash
+
+# Function to calculate Dearness Allowance (DA)
+calculate_da() {
+  basic_amount=$1
+  da=$(echo "scale=2; $basic_amount * 0.9" | bc)
+  echo "Dearness Allowance: $da"
+}
+
+# Function to calculate Provident Fund (PF)
+calculate_pf() {
+  basic_amount=$1
+  pf=$(echo "scale=2; $basic_amount * 0.12" | bc)
+  echo "Provident Fund: $pf"
+}
+
+# Function to calculate House Rent Allowance (HRA)
+calculate_hra() {
+  basic_amount=$1
+  da=$2
+  hra=$(echo "scale=2; ($basic_amount + $da) * 0.20" | bc)
+  echo "House Rent Allowance: $hra"
+}
+
+# Function to calculate Income Tax (IT)
+calculate_it() {
+  basic_amount=$1
+  da=$2
+  hra=$3
+  it=$(echo "scale=2; ($basic_amount + $da + $hra) * 0.05" | bc)
+  echo "Income Tax Deducted: $it"
+}
+
+# Function to calculate Take-Home Salary
+calculate_take_home_salary() {
+  basic_amount=$1
+  da=$2
+  hra=$3
+  it=$4
+  take_home_salary=$(echo "scale=2; $basic_amount + $da + $hra - $it" | bc)
+  echo "Take-Home Salary: $take_home_salary"
+}
+
+# Main menu
+echo "Menu Options:"
+echo "a. Dearness Allowance (DA)"
+echo "b. Provident Fund (PF)"
+echo "c. House Rent Allowance (HRA)"
+echo "d. Income Tax Deducted (IT)"
+echo "e. Take-Home Salary"
+
+echo "Enter the basic amount: "
+read basic
+
+while true; do
+  echo "Enter your choice (a/b/c/d/e or q to quit): "
+  read choice
+
+  case $choice in
+    a)
+      calculate_da $basic
+      ;;
+    b)
+      calculate_pf $basic
+      ;;
+    c)
+      calculate_da $basic
+      calculate_hra $basic $da
+      ;;
+    d)
+      calculate_da $basic
+      calculate_hra $basic $da
+      calculate_it $basic $da $hra
+      ;;
+    e)
+      calculate_da $basic
+      calculate_hra $basic $da
+      calculate_it $basic $da $hra
+      calculate_take_home_salary $basic $da $hra $it
+      ;;
+    q)
+      echo "Exiting the program."
+      exit 0
+      ;;
+    *)
+      echo "Invalid choice. Please select a valid option (a/b/c/d/e or q to quit)."
+      ;;
+  esac
+done
+
+//You can save this script to a file, make it executable using chmod +x script_name.sh, and then run it. It will display the menu and allow you to choose options to calculate various components based on the basic salary you input.
+----------------------------------------------------------------------------------------
+
+7. Write a shell script to find file permissions of user, group and others.
+
+#!/bin/bash
+
+# Prompt the user for the file path
+echo "Enter the file path: "
+read file_path
+
+# Check if the file exists
+if [ -e "$file_path" ]; then
+  # Use stat to get the file permissions
+  permissions=$(stat -c "%A" "$file_path")
+
+  # Display the permissions
+  echo "File Permissions for $file_path:"
+  echo "User:   ${permissions:1:3}"
+  echo "Group:  ${permissions:4:3}"
+  echo "Others: ${permissions:7:3}"
+else
+  echo "File not found at $file_path"
+fi
+
+//Save this script to a file, for example, file_permissions.sh, and make it executable using:
+chmod +x file_permissions.sh
+
+//Then, you can run the script:
+./file_permissions.sh
+---------------------------------------------------------------------------------
+
+8. Write a shell script that accepts two files are identical or not.
+
+#!/bin/bash
+
+# Prompt the user to enter the paths of the two files
+echo "Enter the path of the first file: "
+read file1
+
+echo "Enter the path of the second file: "
+read file2
+
+# Check if both files exist
+if [ -e "$file1" ] && [ -e "$file2" ]; then
+  # Use the 'cmp' command to compare the files
+  if cmp -s "$file1" "$file2"; then
+    echo "The files are identical."
+  else
+    echo "The files are not identical."
+  fi
+else
+  echo "One or both of the files do not exist."
+fi
+
+//Save this script to a file, for example, compare_files.sh, and make it executable using:
+chmod +x compare_files.sh
+//Then, you can run the script:
+./compare_files.sh
+
+----------------------------------------------------------------------------------
+9. Write a shell script to display all the words, having length <4 characters, of a file f1.txt
+
+#!/bin/bash
+
+# Check if the file f1.txt exists
+if [ -e "f1.txt" ]; then
+  # Use awk to extract and print words with length < 4
+  awk 'length($0) < 4 { gsub(/[^a-zA-Z]/, " "); for (i = 1; i <= NF; i++) if (length($i) < 4) print $i }' f1.txt
+else
+  echo "File f1.txt not found."
+fi
+
+//Save this script to a file, for example, display_short_words.sh, and make it executable using:
+chmod +x display_short_words.sh
+
+//Then, you can run the script:
+./display_short_words.sh
+--------------------------------------------------------------------
+
+10. Write a shell script to find total number of files and total number of directories in current working
+directory.
+
+#!/bin/bash
+
+# Initialize counters
+file_count=0
+directory_count=0
+
+# Use find to count files and directories in the current directory
+find . -type f -exec echo \; | wc -l | tr -d ' ' > temp_file_count
+find . -type d -exec echo \; | wc -l | tr -d ' ' > temp_directory_count
+
+# Read and assign values from temporary files to variables
+file_count=$(cat temp_file_count)
+directory_count=$(cat temp_directory_count)
+
+# Remove temporary files
+rm -f temp_file_count temp_directory_count
+
+# Display the counts
+echo "Total number of files: $file_count"
+echo "Total number of directories: $directory_count"
+
+//Save this script to a file, for example, count_files_and_directories.sh, and make it executable using:
+chmod +x count_files_and_directories.sh
+
+//Then, you can run the script:
+./count_files_and_directories.sh
+
+------------------------------------------------------------------------------
+
+11. Write a shell script to find total number of characters, words and lines of a file. (Do not use wc
+command.
+
+#!/bin/bash
+
+# Check if a file is provided as an argument
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <filename>"
+  exit 1
+fi
+
+# Initialize counters
+char_count=0
+word_count=0
+line_count=0
+
+# Read the file line by line
+while IFS= read -r line; do
+  # Increment the line count
+  ((line_count++))
+
+  # Count characters in the line
+  char_count=$((char_count + ${#line}))
+
+  # Count words in the line
+  words=($line)
+  word_count=$((word_count + ${#words[@]}))
+done < "$1"
+
+# Display the counts
+echo "Total number of characters: $char_count"
+echo "Total number of words: $word_count"
+echo "Total number of lines: $line_count"
+
+//Save this script to a file, for example, count_chars_words_lines.sh, and make it executable using:
+chmod +x count_chars_words_lines.sh
+
+//Then, you can run the script with the filename as an argument:
+./count_chars_words_lines.sh filename.txt
+
+-------------------------------------------------------------------------------------
+
+12. Write a shell script which accepts a username and check the entered user is currently logged in or
+not.
+
+#!/bin/bash
+
+# Prompt the user to enter a username
+echo "Enter the username to check: "
+read username
+
+# Use the 'who' command to list all logged-in users and filter for the specified username
+logged_in=$(who | awk -v user="$username" '$1 == user {print $1}')
+
+# Check if the username is found in the 'who' output
+if [ -n "$logged_in" ]; then
+  echo "$username is currently logged in."
+else
+  echo "$username is not currently logged in."
+fi
+
+//Save this script to a file, for example, check_user_login.sh, and make it executable using:
+chmod +x check_user_login.sh
+
+//Then, you can run the script:
+./check_user_login.sh
+------------------------------------------------------------------------------------------
+
+13. Write a shell script to find total number of occurrences of SDJIC in given file. (Please provide
+necessary validations)
+
+#!/bin/bash
+
+# Check if a file is provided as an argument
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <filename>"
+  exit 1
+fi
+
+# Check if the file exists
+if [ ! -e "$1" ]; then
+  echo "File '$1' does not exist."
+  exit 1
+fi
+
+# Use grep to count occurrences of "SDJIC" in the file
+count=$(grep -o -i "SDJIC" "$1" | wc -l)
+
+echo "Total number of occurrences of 'SDJIC' in $1: $count"
+
+//Save this script to a file, for example, count_sdjic_occurrences.sh, and make it executable using:
+chmod +x count_sdjic_occurrences.sh
+
+//Then, you can run the script with the filename as an argument:
+./count_sdjic_occurrences.sh filename.txt
+
+---------------------------------------------------------------------------------
+14. Write a shell script which accepts filename as input and reverse individual words from it. (Please
+provide necessary validations)
+
+#!/bin/bash
+
+# Check if a filename is provided as an argument
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <filename>"
+  exit 1
+fi
+
+# Check if the file exists
+if [ ! -e "$1" ]; then
+  echo "File '$1' does not exist."
+  exit 1
+fi
+
+# Function to reverse a word
+reverse_word() {
+  local input="$1"
+  local output=""
+  local length=${#input}
+
+  for ((i = length - 1; i >= 0; i--)); do
+    output="${output}${input:i:1}"
+  done
+
+  echo "$output"
+}
+
+# Read the file and reverse individual words
+while read -r line; do
+  for word in $line; do
+    reversed_word=$(reverse_word "$word")
+    echo -n "$reversed_word "
+  done
+  echo  # Move to the next line
+done < "$1"
+
+//Save this script to a file, for example, reverse_words.sh, and make it executable using:
+chmod +x reverse_words.sh
+
+//Then, you can run the script with the filename as an argument:
+./reverse_words.sh filename.txt
+
+----------------------------------------------------------------------------
+
+15. Write a shell script to display all the lines from a file (11.txt), which starts with text “unix”. (not case
+sensitive)
+
+#!/bin/bash
+
+# Check if the file exists
+if [ ! -e "11.txt" ]; then
+  echo "File '11.txt' does not exist."
+  exit 1
+fi
+
+# Use grep to find lines that start with "unix" (case-insensitive)
+grep -i "^unix" 11.txt
+
+//Save this script to a file, for example, display_unix_lines.sh, and make it executable using:
+chmod +x display_unix_lines.sh
+
+//Then, you can run the script:
+./display_unix_lines.sh
+
+-------------------------------------------------------------------------------
+
+16. Write grep command to perform following actions:
+
+a. Count the number of blank lines in file f1.txt:
+grep -c '^$' f1.txt
+
+b. Print all lines containing "sdjic" in file f1.txt:
+grep 'sdjic' f1.txt
+
+c. Print the lines that start with "sdjic" in file f1.txt:
+grep '^sdjic' f1.txt
+
+d. Search for files in the CPROGRAMS directory that contain the string "include":
+grep -rl 'include' CPROGRAMS
+
+e. Print lines having exactly 50 characters in file f1.txt:
+grep -E '^.{50}$' f1.txt
+
+f. Count the number of blank lines in file f1.txt (again):
+grep -c '^$' f1.txt
+
+g. Display lines having at least one character in file f1.txt:
+grep -v '^$' f1.txt
+
+h. Display lines having "sdjic" text in any case in file f1.txt:
+grep -i 'sdjic' f1.txt
+
+i. Display lines of file f1.txt having exactly 3 characters:
+grep -E '^...$' f1.txt
+
+j. Display lines of file f1.txt which begin with any alphabet:
+grep '^[A-Za-z]' f1.txt
+
+k. Display lines whose last word is "UNIX" in file f1.txt:
+grep -E '\bUNIX$' f1.txt
+
+l. Display filenames in the current directory having the last character as a digit [0-9]:
+ls | grep '[0-9]$'
+
+m. Display a list of filenames in the current directory that only consist of digits:
+ls | grep '^[0-9]*$'
+
+n. Display lines of file f1.txt which only consist of digits:
+grep '^[0-9]*$' f1.txt
+
+o. Display lines of file f1.txt which only consist of capital alphabets:
+grep '^[A-Z]*$' f1.txt
+
+p. Search for all lines in file f1.txt which end with a period ".":
+grep '\.$' f1.txt
+
+---------------------------------------------------------------------------
+
+17. Write sed command to perform following tasks
+
+a. To print only the last line of f1.txt:
+sed -n '$p' f1.txt
+
+b. To print lines number 1-3, 6-7, and 10 of f1.txt:
+sed -n -e '1,3p' -e '6,7p' -e '10p' f1.txt
+
+c. To print lines beginning with "SDJIC" in f1.txt:
+sed -n '/^SDJIC/p' f1.txt
+
+d. Print three lines starting from the fourth line of f1.txt:
+sed -n '4,7p' f1.txt
+
+e. Print all blank lines of file f1.txt:
+sed -n '/^$/p' f1.txt
+
+f. Print lines having either "sdjic" or "sdjyc" in f1.txt:
+sed -n '/sdjic\|sdjyc/p' f1.txt
+
+g. Lines beginning with either an alphabet or a digit in f1.txt:
+sed -n '/^[A-Za-z0-9]/p' f1.txt
+
+h. To insert a line "additional line" before every line in f1.txt:
+sed 's/^/additional line\n/' f1.txt
+
+i. To replace every occurrence of | with : in the first three lines:
+sed '1,3s/|/:/g' f1.txt
+
+j. To replace every occurrence of | with : in every line:
+sed 's/|/:/g' f1.txt
+
+k. To remove all the lines containing the word "fail" from f1.txt:
+sed '/fail/d' f1.txt
+
+------------------------WRITEN BY MR_BHESANIYA---------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
